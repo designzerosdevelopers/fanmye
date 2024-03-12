@@ -10,8 +10,10 @@ use Illuminate\Support\Facades\Auth;
 use JavaScript;
 use View;
 
+
 class FeedController extends Controller
 {
+
     /**
      * Renders feed items.
      *
@@ -81,4 +83,8 @@ class FeedController extends Controller
     {
         return response()->json(['success'=>true, 'data'=>MembersHelperServiceProvider::getSuggestedMembers(true, $request->get('filters'))]);
     }
+
 }
+
+
+

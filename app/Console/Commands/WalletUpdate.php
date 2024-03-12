@@ -4,6 +4,8 @@ namespace App\Console\Commands;
 use Carbon\Carbon;
 use App\Model\Wallet;
 use App\Model\Transaction;
+use App\Model\Subscription;
+use App\Helpers\PaymentHelper;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 
@@ -23,13 +25,11 @@ class WalletUpdate extends Command
      */
     protected $description = 'Perform hourly task';
 
-    /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
+    protected $paymentHandler;
+
+    public function __construct(PaymentHelper $paymentHandler)
     {
+        $this->paymentHandler = $paymentHandler;
         parent::__construct();
     }
 
@@ -41,11 +41,11 @@ class WalletUpdate extends Command
     public function handle()
     {
       
-    $currentDateTime = Carbon::now();
-    $eightDaysAgo = $currentDateTime->subDays(8);
+      $currentDateTime = Carbon::now();
+      $eightDaysAgo = $currentDateTime->subDays(8);
 
 
-    $transaction8new = Transaction::where('created_at', '>', $eightDaysAgo)->get();
+       $transaction8new = Transaction::where('created_at', '>', $eightDaysAgo)->get();
 
         $pendingAmounts = [];
 
@@ -85,28 +85,69 @@ class WalletUpdate extends Command
         }
     
 
-     Transaction::where('pending', 1)->where('created_at', '<=', $eightDaysAgo)->update(['pending' => 0]);
+      Transaction::where('pending', 1)->where('created_at', '<=', $eightDaysAgo)->update(['pending' => 0]);
 
 
 
-     $usersWithOutPending = Transaction::where('pending', 0)
-     ->distinct('recipient_user_id')
-     ->pluck('recipient_user_id')
-     ->toArray();
+       $usersWithOutPending = Transaction::where('pending', 0)
+        ->distinct('recipient_user_id')
+        ->pluck('recipient_user_id')
+        ->toArray();
  
-    $usersWithPending = Transaction::where('pending', 1)
+       $usersWithPending = Transaction::where('pending', 1)
         ->distinct('recipient_user_id')
         ->pluck('recipient_user_id')
         ->toArray();
 
 
-    $usersWithOutPending = array_diff($usersWithOutPending, $usersWithPending);
+        $usersWithOutPending = array_diff($usersWithOutPending, $usersWithPending);
     
         if (!empty($usersWithOutPending)) {
             Wallet::whereIn('user_id', $usersWithOutPending)->update(['pendingBalance' => 0]);
         }
         
         $this->info('Wallet Update Hourly task executed successfully.');
-        Log::info('your corn job is working');
+
+
+
+                        // Retrieve all subscribers
+                        $subscribers = Subscription::all();
+
+                        // Loop through each subscriber
+                        foreach ($subscribers as $subscriber) {
+        
+                            $transaction = new Transaction();
+                            $transaction['sender_user_id'] = $subscriber->sender_user_id;
+                            $transaction['recipient_user_id'] = $subscriber->recipient_user_id;
+                            $transaction['type'] = $subscriber->type;
+                            $transaction['status'] = Transaction::APPROVED_STATUS;
+                            $transaction['amount'] = $subscriber->amount;
+                            $transaction['currency'] = config('app.site.currency_code');
+                            $transaction['payment_provider'] = 'paywithwallet';
+                            $transaction['subscription_id'] = $subscriber->id;
+        
+                            
+                            if (Carbon::now()->gte(Carbon::parse($subscriber->expires_at))) {
+        
+                              $wallet = Wallet::where('user_id', $subscriber->sender_user_id)->firstOrfail();
+                          
+                                if ($wallet->total >= $subscriber->amount) {
+        
+                                    $this->paymentHandler->updateCreditSubscriptionByTransaction($transaction);
+                                    $transaction->save();
+                                    
+                                    $creditToDeduct = min($wallet->total, $subscriber->amount);
+                                    $wallet->total -= $creditToDeduct;
+                                    $wallet->save();
+                                } else {
+                                    $subscriber = Subscription::where('recipient_user_id', $transaction['recipient_user_id'])
+                                    ->where('sender_user_id', $transaction['sender_user_id'])
+                                    ->first();
+                                    $subscriber->status = Subscription::EXPIRED_STATUS;
+                                    $subscriber->save();
+                                }
+                            }
+                        }
+        
     }
 }
