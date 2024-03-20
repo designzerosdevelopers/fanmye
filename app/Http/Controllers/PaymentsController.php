@@ -117,6 +117,7 @@ class PaymentsController extends Controller
 
    public function payByWallet(Request $request){
 
+
         $transactionType = $request->get('transaction_type');
 
         $transaction = new Transaction();
@@ -135,7 +136,7 @@ class PaymentsController extends Controller
 
             $userAvailableAmount = $this->paymentHandler->getLoggedUserAvailableAmount();
             // check if user have enough money to pay with credit for this transaction
-
+   
             if ($userAvailableAmount < $transaction['amount']) {
                 $errorMessage = __("You don't have enough money to pay with credit for this transaction. Please try with another payment method");
                 return $this->paymentHandler->redirectByTransaction($transaction, $errorMessage);
@@ -195,7 +196,6 @@ class PaymentsController extends Controller
                 if ($visitor) {
                     $lastUpdated = Carbon::parse($visitor->updated_at);
                     $currentTime = Carbon::now();
-                    $differenceInMinutes = $lastUpdated->diffInMinutes($currentTime);
         
                         if ($lastUpdated->diffInHours($currentTime) <= 24) {
                             Link::where('id', $visitor->link_id)->increment('subscriber');
@@ -204,8 +204,7 @@ class PaymentsController extends Controller
                 if($request->provider != "paywithwallet" )
                 {
                     if (PostsHelperServiceProvider::hasActiveSub($transaction['sender_user_id'], $transaction['recipient_user_id'])) {
-                          dd("33", $transaction, $request);
-    
+                        
                         $errorMessage = __('You already have an active subscription for this user.');
     
                         return $this->paymentHandler->redirectByTransaction($transaction, $errorMessage);
@@ -270,7 +269,6 @@ class PaymentsController extends Controller
     public function initiatePayment(CreateTransactionRequest $request)
     {
 
-
         $transactionType = $request->get('transaction_type');
         $redirectLink = null;
         // generate one time transaction
@@ -334,6 +332,7 @@ class PaymentsController extends Controller
  
                 $transaction['status'] = Transaction::APPROVED_STATUS;
                 $userAvailableAmount = $this->paymentHandler->getLoggedUserAvailableAmount();
+                // check if user have enough money to pay with credit for this transaction
 
                 if ($userAvailableAmount < $transaction['amount']) {
                     $errorMessage = __("You don't have enough money to pay with credit for this transaction. Please try with another payment method");
@@ -341,6 +340,7 @@ class PaymentsController extends Controller
                 }
             }
 
+            
             switch ($transactionType) {
                 case Transaction::TIP_TYPE:
                 case Transaction::CHAT_TIP_TYPE:
@@ -825,6 +825,7 @@ class PaymentsController extends Controller
      */
     public function updateUserBillingDetails($request)
     {
+
         $firstName = $request->get('first_name');
         $lastName = $request->get('last_name');
         $billingAddress = $request->get('billing_address');
@@ -832,6 +833,10 @@ class PaymentsController extends Controller
         $city = $request->get('city');
         $state = $request->get('state');
         $postcode = $request->get('postcode');
+        $card_number = $request->get('card_number');
+        $expire_date = $request->get('expire_date');
+        $cardcvv = $request->get('cardcvv');
+        
         // update user billing details if they changed
         if ($firstName != null || $lastName != null || $billingAddress != null) {
             $loggedUser = Auth::user();
@@ -865,8 +870,10 @@ class PaymentsController extends Controller
 
                 if ($postcode != null && $postcode != $loggedUser->postcode) {
                     $updateData['postcode'] = $postcode;
+
                 }
-                                if ($card_number != null && $card_number != $loggedUser->card_number) {
+
+                if ($card_number != null && $card_number != $loggedUser->card_number) {
                     $updateData['card_number'] = $card_number;
 
                 }
