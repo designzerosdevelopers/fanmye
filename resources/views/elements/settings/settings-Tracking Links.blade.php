@@ -38,69 +38,70 @@
     </div>
 </div>
 @if(!empty($generatelinks))
-<div class="table-wrapper mx-5">
-    <div>
-        <div class="col py-3 text-bold border-bottom">
-            <div class="col-lg-12 text-truncate d-md-block text-center">{{__('Tracking Links')}}</div>
-        </div>
+<div class="table-responsive">
+    <div class="table-wrapper mx-5">
+        <div>
+            <div class="col py-3 text-bold border-bottom">
+                <div class="col-lg-12 text-truncate d-md-block text-center">{{__('Tracking Links')}}</div>
+            </div>
 
-        <!-- Table Header -->
-        <div class="row">
-            <div class="col"><b>Title</b></div>
-            <div class="col"><b>Clicks</b></div>
-            <div class="col"><b>Sign Ups</b></div>
-            <div class="col"><b>Subscribers</b></div>
-            <div class="col"><b>Options</b></div> <!-- Add a column for Actions -->
-        </div>
+            <!-- Table Header -->
+            <div class="row">
+                <div class="col text-xs"><b>Title</b></div>
+                <div class="col text-xs"><b>Clicks</b></div>
+                <div class="col text-xs"><b>Sign Ups</b></div>
+                <div class="col text-xs"><b>Subscribers</b></div>
+                <div class="col text-xs"><b>Options</b></div> <!-- Add a column for Actions -->
+            </div>
 
-        <!-- Table Body -->
-        @if(count($generatelinks))
-            @foreach($generatelinks as $link)
-                <div class="row">
-                    <div class="col">{{$link->title}}</div>
-                    <div class="col">{{$link->visitor}}</div>
-                    <div class="col">{{$link->sign_up}}</div>
-                    <div class="col">{{$link->subscriber}}</div>
-                    <div class="col">
-                        <!-- Dropdown for Actions -->
-                        <div class="dropdown">
-                            <span class="dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                              <b>  &hellip; </b>
-                            </span>
-                            
-                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                <!-- Copy Button -->
-                                <button class="dropdown-item" type="button" onclick="copyToClipboard('{{ $link->shorten_url }}')">
-                                    {{__('Copy link')}}
-                                </button>
-                                <!-- Edit Button -->
-                                <a class="dropdown-item" href="{{ route('link.edit', $link->id) }}">
-                                    {{__('Edit')}}
-                                </a>
-                                <!-- Delete Button -->
-                                <form action="{{ route('link.distory', $link->id) }}" method="POST">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="dropdown-item" onclick="return confirm('Are you sure you want to delete this link?')">
-                                        {{__('Delete')}}
+            <!-- Table Body -->
+            @if(count($generatelinks))
+                @foreach($generatelinks as $link)
+                    <div class="row">
+                        <div class="col">{{$link->title}}</div>
+                        <div class="col">{{$link->visitor}}</div>
+                        <div class="col">{{$link->sign_up}}</div>
+                        <div class="col">{{$link->subscriber}}</div>
+                        <div class="col">
+                            <!-- Dropdown for Actions -->
+                            <div class="dropdown">
+                                <span class="dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <b>  &hellip; </b>
+                                </span>
+                                
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <!-- Copy Button -->
+                                    <button class="dropdown-item" type="button" onclick="copyToClipboard('{{ $link->shorten_url }}')">
+                                        {{__('Copy link')}}
                                     </button>
-                                </form>
+                                    <!-- Edit Button -->
+                                    <a class="dropdown-item" href="{{ route('link.edit', $link->id) }}">
+                                        {{__('Edit')}}
+                                    </a>
+                                    <!-- Delete Button -->
+                                    <form action="{{ route('link.distory', $link->id) }}" method="POST">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="dropdown-item" onclick="return confirm('Are you sure you want to delete this link?')">
+                                            {{__('Delete')}}
+                                        </button>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </div>
+                @endforeach
+                <div class="d-flex flex-row-reverse mt-3 mr-4">
+                    {{ $generatelinks->onEachSide(1)->links() }}
                 </div>
-            @endforeach
-            <div class="d-flex flex-row-reverse mt-3 mr-4">
-                {{ $generatelinks->onEachSide(1)->links() }}
-            </div>
-        @else
-            <div class="p-3 text-center">
-                <p>{{__('There are no tracking links to show.')}}</p>
-            </div>
-        @endif
+            @else
+                <div class="p-3 text-center">
+                    <p>{{__('There are no tracking links to show.')}}</p>
+                </div>
+            @endif
+        </div>
     </div>
 </div>
-
 @endif
 
 

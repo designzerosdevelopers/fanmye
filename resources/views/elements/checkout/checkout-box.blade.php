@@ -265,7 +265,7 @@
                             </div>
                         </div>
                         <div class="payment-error error text-danger text-bold d-none mb-1">{{__('Please select your payment method')}}</div>
-                        <p class="text-muted mt-1"> {{__('Note: After clicking on the button, you will be directed to a secure gateway for payment. After completing the payment process, you will be redirected back to the website.')}} </p>
+                        <p class="text-muted mt-1"> {{__('Note: To protect your privacy, UN*Reach will appear on your statement.')}} </p>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">{{__('Cancel')}}</button>

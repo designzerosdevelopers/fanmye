@@ -55,7 +55,7 @@
                             <h5 class="d-none d-md-block text-truncate pl-3 pl-md-0 text-bold {{(Cookie::get('app_theme') == null ? (getSetting('site.default_user_theme') == 'dark' ? '' : 'text-dark-r') : (Cookie::get('app_theme') == 'dark' ? '' : 'text-dark-r'))}}">{{__('Contacts')}}</h5>
                             <span data-toggle="tooltip" title="" class="pointer-cursor"
                                   @if(!count($availableContacts))
-                                    data-original-title="{{trans_choice('Before sending a new message, please subscribe to a creator a follow a free profile.',['user' => 0])}}"
+                                    {{-- data-original-title="{{trans_choice('Before sending a new message, please subscribe to a creator a follow a free profile.',['user' => 0])}}" --}}
                                   @else
                                     data-original-title="{{trans_choice('Send a new message',['user' => 0])}}"
                                   @endif

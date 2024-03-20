@@ -53,7 +53,7 @@ class SettingsController extends Controller
         'referrals' => ['heading' => 'Invite other people to earn more', 'icon' => 'person-add'],
         'notifications' => ['heading' => 'Your email notifications settings', 'icon' => 'notifications'],
         'privacy' => ['heading' => 'Your privacy and safety matters', 'icon' => 'shield'],
-        'verify' => ['heading' => 'Get verified and start to earning now', 'icon' => 'checkmark'],
+        'verify' => ['heading' => 'Get verified and start earning now!', 'icon' => 'checkmark'],
         'Tracking Links' => ['heading' => 'Generate Tracking Links to Monetize Performance', 'icon' => 'layers'],
         'statistics' => ['heading' => 'View statistics of your earning', 'icon' => 'wallet'],
     ];

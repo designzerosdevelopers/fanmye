@@ -26,6 +26,7 @@ class SubscriptionsController extends Controller
      */
     public function cancelSubscription(Request $request)
     {
+
         try {
             $subscriptionId = $request->subscriptionId;
             if ($subscriptionId != null) {

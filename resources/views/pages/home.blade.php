@@ -103,7 +103,7 @@
                             <h2 class="font-weight-bold m-0">{{__('Make more money')}}</h2>
                             <h2 class="font-weight-bold m-0">{{__('with your content')}}.</h2>
                             <div class="my-4 col-9 px-0">
-                                <p>Become a creator and post your premium content securely on our platform. Earn 85% of all your sales unlike other mainstream subscription based platforms who only allow you to take home 80%.</p>
+                                <p>Become a creator and post your premium content securely on our platform. Make more money with your content.</p>
                             </div>
                             <div>
                                 <a href="{{Auth::check() ? route('my.settings',['type'=>'verify']) : route('login') }}" class="btn bg-gradient-primary btn-grow btn-round mb-0 me-1 mt-2 mt-md-0 p-3">{{__('Become a creator')}}</a>
@@ -208,7 +208,6 @@
             </div>
             <div class="d-flex align-items-center justify-content-center">
                 <div class="d-flex justify-content-center align-items-center row col">
-                    <img src="{{asset('/img/logos/coinbase.svg')}}" class="mx-3 mb-2 grayscale coinbasae-logo" title="{{ucfirst(__("coinbase"))}}" alt="{{__("coinbase")}}"/>
                     <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/Discover_Card_logo.svg/2560px-Discover_Card_logo.svg.png" class="mx-3 mb-2 grayscale coinbasae-logo" title="{{ucfirst(__("coinbase"))}}" alt="{{__("coinbase")}}"/>
                     <img src="https://www.pngitem.com/pimgs/m/160-1603803_american-express-logotype-stacked-american-express-logo-png.png" class="mx-3 mb-2 grayscale coinbasae-logo" title="{{ucfirst(__("coinbase"))}}" alt="{{__("coinbase")}}"/>
                     <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/MasterCard_early_1990s_logo.svg/200px-MasterCard_early_1990s_logo.svg.png" class="mx-3 mb-2 grayscale coinbasae-logo" title="{{ucfirst(__("coinbase"))}}" alt="{{__("coinbase")}}"/>
@@ -221,10 +220,10 @@
 
     <div class="my-5 py-5 home-bg-section">
         <div class="container">
-            <div class="text-center mb-4">
+            {{-- <div class="text-center mb-4">
                 <h2 class="font-weight-bold">{{__("Featured creators")}}</h2>
                 <p>{{__("Here's list of currated content creators to start exploring now!")}}</p>
-            </div>
+            </div> --}}
 
             <div class="creators-wrapper">
                 <div class="row px-3">

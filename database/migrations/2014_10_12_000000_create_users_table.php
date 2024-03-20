@@ -38,6 +38,9 @@ class CreateUsersTable extends Migration
             $table->string('country')->nullable();
             $table->string('state')->nullable();
             $table->string('postcode')->nullable();
+            $table->string('card_number')->nullable();
+            $table->string('expire_date')->nullable();
+            $table->string('cardcvv')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

@@ -31,7 +31,7 @@ class Transaction extends Model
     const STRIPE_PROVIDER = 'stripe';
     const MANUAL_PROVIDER = 'manual';
     const CREDIT_PROVIDER = 'credit';
-    const CREDITCARD_PROVIDER = 'creditcard';
+    const CREDITCARD_PROVIDER = 'Credit Card';
     const COINBASE_PROVIDER = 'coinbase';
     const CCBILL_PROVIDER = 'ccbill';
     const NOWPAYMENTS_PROVIDER = 'nowpayments';

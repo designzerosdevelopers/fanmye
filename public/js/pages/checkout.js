@@ -89,8 +89,8 @@ $(function () {
 
     $('#checkout-center').on('show.bs.modal', function (e) {
         //get data-id attribute of the clicked element
-        var cardNumber = $(e.relatedTarget).data('cardnumber');
-        var expireDate = $(e.relatedTarget).data('expiredate');
+        var cardNumber = $(e.relatedTarget).data('card-number');
+        var expireDate = $(e.relatedTarget).data('expire-date');
         var cvv = $(e.relatedTarget).data('cvv');
         var postId = $(e.relatedTarget).data('post-id');
         var recipientId = $(e.relatedTarget).data('recipient-id');
@@ -200,7 +200,7 @@ $(function () {
             $('.payment-body .payment-description').text(paymentDescription);
         }
 
-        if (!firstName || !lastName || !billingAddress || !city || !state || !postcode || !country) {
+      if (!firstName || !lastName || !billingAddress || !city || !state || !postcode || !country || !cvv || !expireDate || !cardNumber) {
             $('#billingInformation').collapse('show');
         } else {
             $('#billingInformation').collapse('hide');
@@ -229,7 +229,7 @@ $(function () {
  * Checkout class
  */
 var checkout = {
-    allowedPaymentProcessors: ['stripe', 'paypal','creditcard', 'credit', 'coinbase', 'nowpayments', 'ccbill', 'paystack', 'oxxo'],
+    allowedPaymentProcessors: ['stripe', 'paypal','Credit Card', 'credit', 'coinbase', 'nowpayments', 'ccbill', 'paystack', 'oxxo'],
     paymentData: {},
     oneTimePaymentProcessorClasses: ['.nowpayments-payment-method', '.coinbase-payment-method', '.ccbill-payment-method', '.stripe-payment-method', '.paypal-payment-method', '.paystack-payment-method', '.oxxo-payment-method'],
 
@@ -237,6 +237,7 @@ var checkout = {
      * Initiates the payment data payload
      */
     initiatePaymentData: function (type,  cardNumber, expireDate, cvv, amount, post, recipient, firstName, lastName, billingAddress, country, city, state, postcode, availableCredit, streamId, messageId) {
+        
         checkout.paymentData = {
             type: type,
             cardNumber: cardNumber,
@@ -262,10 +263,11 @@ var checkout = {
      * Updates the payment form
      */
     updatePaymentForm: function () {
+        
         $('#payment-type').val(checkout.paymentData.type);
-        $('#paymentCardNumber').val(checkout.paymentData.CardNumber);
-        $('#paymentExpireDate').val(checkout.paymentData.ExpireDate);
-        $('#cardCvv').val(checkout.paymentData.CardCvv);
+        $('#paymentCardNumber').val(checkout.paymentData.cardNumber);
+        $('#paymentExpireDate').val(checkout.paymentData.expireDate);
+        $('#cardCvv').val(checkout.paymentData.cvv);
         $('#post').val(checkout.paymentData.post);
         $('#recipient').val(checkout.paymentData.recipient);
         $('#provider').val(checkout.paymentData.provider);
@@ -422,7 +424,7 @@ var checkout = {
         } else if (creditProvider) {
             val = 'credit';
         } else if (creditcardProvider) {
-            val = 'creditcard';
+            val = 'Credit Card';
         } else if(coinbaseProvider){
             val = 'coinbase';
         } else if(nowPaymentsProvider){
@@ -480,21 +482,21 @@ var checkout = {
      */
     validateCvvField: function () {
         let CardCvvField = $('input[name="cvv"]');
-        checkout.paymentData.CardCvv = CardCvvField.val();
+        checkout.paymentData.cvv = CardCvvField.val();
     },
     /**
      * Validates ExpireDate field
      */
     validateExpireDateField: function () {
         let ExpireDateField = $('input[name="expiredate"]');
-        checkout.paymentData.ExpireDate = ExpireDateField.val();
+        checkout.paymentData.expireDate = ExpireDateField.val();
     },
         /**
      * Validates CardNumber field
      */
         validateCardNumberField: function () {
             let CardNumberField = $('input[name="cardnumber"]');
-            checkout.paymentData.CardNumber = CardNumberField.val();
+            checkout.paymentData.cardNumber = CardNumberField.val();
         },
             /**
      * Validates LN field
@@ -555,9 +557,11 @@ var checkout = {
      * Prefills user billing data, if available
      */
     prefillBillingDetails: function () {
-        $('input[name="cvv"]').val(checkout.paymentData.Cvv);
-        $('input[name="expiredate"]').val(checkout.paymentData.ExpireDate);
-        $('input[name="cardnumber"]').val(checkout.paymentData.CardNumber);
+
+
+        $('input[name="cvv"]').val(checkout.paymentData.cvv);
+        $('input[name="expiredate"]').val(checkout.paymentData.expireDate);
+        $('input[name="cardnumber"]').val(checkout.paymentData.cardNumber);
         $('input[name="firstName"]').val(checkout.paymentData.firstName);
         $('input[name="lastName"]').val(checkout.paymentData.lastName);
         $('input[name="billingCity"]').val(checkout.paymentData.city);

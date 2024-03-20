@@ -7,7 +7,6 @@ use App\Model\Transaction;
 use App\Model\Subscription;
 use App\Helpers\PaymentHelper;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Log;
 
 class WalletUpdate extends Command
 {
@@ -40,7 +39,7 @@ class WalletUpdate extends Command
      */
     public function handle()
     {
-      
+      //////////////////////Pending amount and wallet update code starting//////////////////////////
       $currentDateTime = Carbon::now();
       $eightDaysAgo = $currentDateTime->subDays(8);
 
@@ -107,47 +106,48 @@ class WalletUpdate extends Command
         }
         
         $this->info('Wallet Update Hourly task executed successfully.');
+      //////////////////////Pending amount and wallet update code ending/////////////////
+
+      //////////////////////Recuring Subscription code starting//////////////////////////
+      $subscribers = Subscription::whereNull('canceled_at')->get();
 
 
+        foreach ($subscribers as $subscriber) {
 
-                        // Retrieve all subscribers
-                        $subscribers = Subscription::all();
+            $transaction = new Transaction();
+            $transaction['sender_user_id'] = $subscriber->sender_user_id;
+            $transaction['recipient_user_id'] = $subscriber->recipient_user_id;
+            $transaction['type'] = $subscriber->type;
+            $transaction['status'] = Transaction::APPROVED_STATUS;
+            $transaction['amount'] = $subscriber->amount;
+            $transaction['currency'] = config('app.site.currency_code');
+            $transaction['payment_provider'] = 'paywithwallet';
+            $transaction['subscription_id'] = $subscriber->id;
 
-                        // Loop through each subscriber
-                        foreach ($subscribers as $subscriber) {
-        
-                            $transaction = new Transaction();
-                            $transaction['sender_user_id'] = $subscriber->sender_user_id;
-                            $transaction['recipient_user_id'] = $subscriber->recipient_user_id;
-                            $transaction['type'] = $subscriber->type;
-                            $transaction['status'] = Transaction::APPROVED_STATUS;
-                            $transaction['amount'] = $subscriber->amount;
-                            $transaction['currency'] = config('app.site.currency_code');
-                            $transaction['payment_provider'] = 'paywithwallet';
-                            $transaction['subscription_id'] = $subscriber->id;
-        
-                            
-                            if (Carbon::now()->gte(Carbon::parse($subscriber->expires_at))) {
-        
-                              $wallet = Wallet::where('user_id', $subscriber->sender_user_id)->firstOrfail();
-                          
-                                if ($wallet->total >= $subscriber->amount) {
-        
-                                    $this->paymentHandler->updateCreditSubscriptionByTransaction($transaction);
-                                    $transaction->save();
-                                    
-                                    $creditToDeduct = min($wallet->total, $subscriber->amount);
-                                    $wallet->total -= $creditToDeduct;
-                                    $wallet->save();
-                                } else {
-                                    $subscriber = Subscription::where('recipient_user_id', $transaction['recipient_user_id'])
-                                    ->where('sender_user_id', $transaction['sender_user_id'])
-                                    ->first();
-                                    $subscriber->status = Subscription::EXPIRED_STATUS;
-                                    $subscriber->save();
-                                }
-                            }
-                        }
+            
+            if (Carbon::now()->gte(Carbon::parse($subscriber->expires_at))) {
+
+                $wallet = Wallet::where('user_id', $subscriber->sender_user_id)->firstOrfail();
+            
+                if ($wallet->total >= $subscriber->amount) {
+
+                    $this->paymentHandler->updateCreditSubscriptionByTransaction($transaction);
+                    $transaction->save();
+                    
+                    $creditToDeduct = min($wallet->total, $subscriber->amount);
+                    $wallet->total -= $creditToDeduct;
+                    $wallet->save();
+                } else {
+                    $subscriber = Subscription::where('recipient_user_id', $transaction['recipient_user_id'])
+                    ->where('sender_user_id', $transaction['sender_user_id'])
+                    ->first();
+                    $subscriber->status = Subscription::EXPIRED_STATUS;
+                    $subscriber->save();
+                }
+            }
+        }
+
+        //////////////////////Recuring Subscription code ending//////////////////////////
         
     }
 }
