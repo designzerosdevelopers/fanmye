@@ -27,9 +27,10 @@
     </div>
 
     <div class="form-group ">
-        <label for="email" class=" col-form-label ">{{ __('E-Mail Address') }}</label>
+        <label for="email" class="col-form-label">{{ __('E-Mail Address') }}</label>
         <div class="">
             <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email">
+            <input type="hidden" name="timezone" id="timezone" required>
             @error('email')
             <span class="invalid-feedback" role="alert">
                 <strong>{{ $message }}</strong>
@@ -109,3 +110,6 @@
         </p>
     </div>
 @endif
+<script>
+ document.getElementById('timezone').value = Intl.DateTimeFormat().resolvedOptions().timeZone;
+</script>

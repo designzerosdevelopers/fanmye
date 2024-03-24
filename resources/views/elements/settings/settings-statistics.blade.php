@@ -47,9 +47,11 @@
 
                     <!-- Statistics Values -->
                     <div class="row">
-                            @foreach($statistics as $value)
-                                <div class="col"><p>{{ $value }}</p></div>
-                            @endforeach
+                                <div class="col"><p>{{ $statistics['message_unlock'] }}(0 total sold)</p></div>
+                                <div class="col"><p>{{ $statistics['post_unlock'] }}(0 total sold)</p></div>
+                                <div class="col"><p>{{ $statistics['subscribers'] }}(0 total sold)</p></div>
+                                <div class="col"><p>{{ $statistics['tip'] }}(0 total sold)</p></div>
+                                <div class="col"><p>{{ $statistics['grand_total'] }}</p></div>
                     </div>
                 </div>
             </div>

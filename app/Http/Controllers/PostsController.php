@@ -300,7 +300,8 @@ class PostsController extends Controller
         try {
             $comment = $request->get('message');
             $postID = $request->get('post_id');
-
+            $timeZone = $request->get('user_timezone');
+            $localZoneTime = $request->get('local_zone_time');
             // Checking authorization & post existence
             $post = Post::where('id', $postID)->first();
             if (!$post) {
@@ -316,6 +317,9 @@ class PostsController extends Controller
                     'message' => $comment,
                     'post_id' => $postID,
                     'user_id' => Auth::user()->id,
+                    'user_timezone'=>$timeZone,
+                    'created_at' => Carbon::parse($localZoneTime),
+                    'updated_at' => Carbon::parse($localZoneTime),
                 ]);
 
                 $post = Post::query()->where('id', $postID)->first();

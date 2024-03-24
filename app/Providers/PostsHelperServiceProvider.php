@@ -437,6 +437,9 @@ class PostsHelperServiceProvider extends ServiceProvider
                 'hasMore' => $comments->hasMorePages(),
             ];
             $commentsData = $comments->map(function ($comment) {
+
+                $comment->created_at = Carbon::createFromFormat('Y-m-d H:i:s', $comment->created_at, $comment->user_timezone)->copy()->timezone(Auth::user()->timezone);
+
                 $post = ['id' => $comment->id, 'post_id' => $comment->post->id, 'html' => View::make('elements.feed.post-comment')->with('comment', $comment)->render()];
 
                 return $post;

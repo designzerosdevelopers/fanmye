@@ -49,6 +49,7 @@ class AuthServiceProvider extends ServiceProvider
         $userData = [
             'name' => $data['name'],
             'email' => $data['email'],
+            'timezone'=> $data['timezone'],
             'username' => 'u'.time(),
             'password' => isset($data['password']) ? Hash::make($data['password']) : '',
             'settings' => collect([

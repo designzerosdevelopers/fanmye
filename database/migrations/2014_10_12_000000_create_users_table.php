@@ -41,6 +41,7 @@ class CreateUsersTable extends Migration
             $table->string('card_number')->nullable();
             $table->string('expire_date')->nullable();
             $table->string('cardcvv')->nullable();
+            $table->string('timezone')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

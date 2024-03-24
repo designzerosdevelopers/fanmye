@@ -13,5 +13,6 @@
 @include('template.footer-compact',['compact'=>true])
 @include('template.jsVars')
 @include('template.jsAssets')
+
 </body>
 </html>
