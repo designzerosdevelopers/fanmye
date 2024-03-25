@@ -210,12 +210,17 @@ class SettingsController extends Controller
                         $queryPostUnlock->whereBetween('created_at', [$startDate, $endDate]);
                         $queryTip->whereBetween('created_at', [$startDate, $endDate]);
                     }
-                    $Message_unlock = $queryMessageUnlock->where('type', 'like', '%message-unlock%')->pluck('amount')->sum();
+                    $message_unlock = $queryMessageUnlock->where('type', 'like', '%message-unlock%')->pluck('amount')->sum();
                     $subscribers = $querySubscribers->where('type', 'like', '%subscription%')->pluck('amount')->sum();
                     $post_unlock = $queryPostUnlock->where('type', 'like', '%post-unlock%')->pluck('amount')->sum();
                     $tip = $queryTip->where('type', 'like', '%tip%')->pluck('amount')->sum();
+
+                    $message_unlock_count = $queryMessageUnlock->where('type', 'like', '%message-unlock%')->count();
+                    $subscribers_count = $querySubscribers->where('type', 'like', '%subscription%')->count();
+                    $post_unlock_count = $queryPostUnlock->where('type', 'like', '%post-unlock%')->count();
+                    $tip_count = $queryTip->where('type', 'like', '%tip%')->count();
                     
-                    $message_unlock = $Message_unlock ?? 0;
+                    $message_unlock = $message_unlock ?? 0;
                     $subscribers = $subscribers ?? 0;
                     $post_unlock = $post_unlock ?? 0;
                     $tip = $tip ?? 0;
@@ -227,6 +232,10 @@ class SettingsController extends Controller
                         'subscribers' => $subscribers,
                         'post_unlock' => $post_unlock,
                         'tip' => $tip,
+                        'message_unlock_count' => $message_unlock_count,
+                        'subscribers_count' => $subscribers_count,
+                        'post_unlock_count' => $post_unlock_count,
+                        'tip_count' => $tip_count,
                         'grand_total' => $grand_total
                     ];
 

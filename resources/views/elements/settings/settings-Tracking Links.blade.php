@@ -38,7 +38,7 @@
     </div>
 </div>
 @if(!empty($generatelinks))
-<div class="table-responsive">
+<div class="">
     <div class="table-wrapper mx-5">
         <div>
             <div class="col py-3 text-bold border-bottom">
@@ -47,22 +47,22 @@
 
             <!-- Table Header -->
             <div class="row">
-                <div class="col text-xs"><b>Title</b></div>
-                <div class="col text-xs"><b>Clicks</b></div>
-                <div class="col text-xs"><b>Sign Ups</b></div>
-                <div class="col text-xs"><b>Subscribers</b></div>
-                <div class="col text-xs"><b>Options</b></div> <!-- Add a column for Actions -->
+                <div class="col-3 text-xs"><b>Title</b></div>
+                <div class="col-2 text-xs"><b>Clicks</b></div>
+                <div class="col-2 text-xs"><b>Sign Ups</b></div>
+                <div class="col-3 text-xs"><b>Subscribers</b></div>
+                <div class="col-2 text-xs"><b>Options</b></div>
             </div>
-
+            <hr>
             <!-- Table Body -->
             @if(count($generatelinks))
                 @foreach($generatelinks as $link)
                     <div class="row">
-                        <div class="col">{{$link->title}}</div>
-                        <div class="col">{{$link->visitor}}</div>
-                        <div class="col">{{$link->sign_up}}</div>
-                        <div class="col">{{$link->subscriber}}</div>
-                        <div class="col">
+                        <div class="col-3">{{$link->title}}</div>
+                        <div class="col-2">{{$link->visitor}}</div>
+                        <div class="col-2">{{$link->sign_up}}</div>
+                        <div class="col-3">{{$link->subscriber}}</div>
+                        <div class="col-2">
                             <!-- Dropdown for Actions -->
                             <div class="dropdown">
                                 <span class="dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -90,6 +90,7 @@
                             </div>
                         </div>
                     </div>
+                    <hr>
                 @endforeach
                 <div class="d-flex flex-row-reverse mt-3 mr-4">
                     {{ $generatelinks->onEachSide(1)->links() }}

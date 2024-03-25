@@ -47,11 +47,11 @@
 
                     <!-- Statistics Values -->
                     <div class="row">
-                                <div class="col"><p>{{ $statistics['message_unlock'] }}(0 total sold)</p></div>
-                                <div class="col"><p>{{ $statistics['post_unlock'] }}(0 total sold)</p></div>
-                                <div class="col"><p>{{ $statistics['subscribers'] }}(0 total sold)</p></div>
-                                <div class="col"><p>{{ $statistics['tip'] }}(0 total sold)</p></div>
-                                <div class="col"><p>{{ $statistics['grand_total'] }}</p></div>
+                                <div class="col"><p>${{ $statistics['message_unlock'] }}({{ $statistics['message_unlock_count'] }} total sold)</p></div>
+                                <div class="col"><p>${{ $statistics['post_unlock'] }}({{ $statistics['post_unlock_count'] }} total sold)</p></div>
+                                <div class="col"><p>${{ $statistics['subscribers'] }}({{ $statistics['subscribers_count'] }} total sold)</p></div>
+                                <div class="col"><p>${{ $statistics['tip'] }}({{ $statistics['tip_count'] }} total sold)</p></div>
+                                <div class="col"><p>${{ $statistics['grand_total'] }}</p></div>
                     </div>
                 </div>
             </div>
