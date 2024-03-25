@@ -21,8 +21,8 @@ use App\Providers\NotificationServiceProvider;
 use App\Providers\PaymentsServiceProvider;
 use App\Providers\SettingsServiceProvider;
 use App\User;
-use Carbon\Carbon;
 use DateTime;
+use Carbon\Carbon;
 use DateTimeZone;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
@@ -796,7 +796,6 @@ class PaymentHelper
             $subscription['expires_at'] = Carbon::now()->addMonths(PaymentsServiceProvider::getSubscriptionMonthlyIntervalByTransactionType($transaction->type));
             $subscription['status'] = Subscription::ACTIVE_STATUS;
             $transaction['status'] = Transaction::APPROVED_STATUS;
-            
 
             $subscription->save();
 
@@ -1003,11 +1002,11 @@ class PaymentHelper
                 } elseif ($transaction->type === Transaction::MESSAGE_UNLOCK) {
                     $successMessage = __('You successfully unlocked this message.');
                 }
-
+                
                 return $this->handleRedirectByTransaction($transaction, $recipient, $successMessage, $success = true);
                 // handles any other status
             } else {
-
+                
                 return $this->handleRedirectByTransaction($transaction, $recipient, $errorMessage, $success = false);
             }
         } else {
@@ -1026,7 +1025,7 @@ class PaymentHelper
      * @return \Illuminate\Http\RedirectResponse
      */
     private function handleRedirectByTransaction($transaction, $recipient, $message, $success = false)
-    {                           
+    {
         $labelType = $success ? 'success' : 'error';
         if ($this->isSubscriptionPayment($transaction->type)) {
             if($transaction->payment_provider === Transaction::CCBILL_PROVIDER && $transaction->status === Transaction::INITIATED_STATUS) {
@@ -1038,10 +1037,8 @@ class PaymentHelper
                 return Redirect::route('public.stream.get', ['streamID' => $transaction->stream_id, 'slug' => $transaction->stream->slug])
                     ->with($labelType, $message);
             }
-            
             return Redirect::route('profile', ['username' => $recipient->username])
                 ->with($labelType, $message);
-
         } elseif ($transaction->type === Transaction::DEPOSIT_TYPE) {
             if(in_array($transaction->payment_provider, Transaction::PENDING_PAYMENT_PROCESSORS)){
                 if($transaction->status === Transaction::INITIATED_STATUS || $transaction->status === Transaction::PENDING_STATUS){
@@ -1081,7 +1078,6 @@ class PaymentHelper
             return Redirect::route('profile', ['username' => $recipient->username])
                 ->with($labelType, $message);
         } elseif ($transaction->type === Transaction::POST_UNLOCK) {
-
             if(in_array($transaction->payment_provider, Transaction::PENDING_PAYMENT_PROCESSORS)) {
                 if($transaction->status === Transaction::INITIATED_STATUS || $transaction->status === Transaction::PENDING_STATUS){
                     $labelType = 'warning';
@@ -1090,7 +1086,6 @@ class PaymentHelper
                     $message = __('Payment canceled');
                 }
             }
-
             return Redirect::route('posts.get', ['post_id' => $transaction->post_id, 'username' => $recipient->username])
                 ->with($labelType, $message);
         } elseif ($transaction->type === Transaction::STREAM_ACCESS) {
@@ -1113,11 +1108,8 @@ class PaymentHelper
                     $message = __('Payment canceled');
                 }
             }
-
             return Redirect::route('my.messenger.get', ['messageUnlock' => 1, 'token' => $transaction->user_message_id])->with($labelType, $message);
         }
-
-
     }
 
     /**
