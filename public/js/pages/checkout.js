@@ -8,18 +8,19 @@ $(function () {
 
     $('#accordion').hide(); 
 
-    $('#cardnumber').on('input', function () {
-        var cardNumber = $(this).val();
-
-        // Remove non-numeric characters
-        cardNumber = cardNumber.replace(/\D/g, '');
-
+    $('#card-number').on('input paste', function (event) {
+        var cardNumber = event.type === 'input' ? $(this).val() : event.originalEvent.clipboardData.getData('text');
+    
+        // Remove non-numeric characters and spaces
+        cardNumber = cardNumber.replace(/\D/g, '').replace(/\s/g, '');
+    
         // Ensure a maximum of 16 digits (adjust based on your specific needs)
         cardNumber = cardNumber.substring(0, 16);
-
+    
         // Update the input value
         $(this).val(cardNumber);
     });
+
 
     $('#expiredate').on('input', function () {
         // Remove non-numeric characters

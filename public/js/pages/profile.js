@@ -118,3 +118,14 @@ var Profile = {
     }
 
 };
+$(document).ready(function() {
+    // Smooth scrolling for anchor links
+    $(document).on('click', 'a[href^="#"]', function (event) {
+        event.preventDefault();
+
+        $('html, body').animate({
+            scrollTop: $($.attr(this, 'href')).offset().top
+        }, 500); // Adjust the duration as per your preference
+    });
+});
+
