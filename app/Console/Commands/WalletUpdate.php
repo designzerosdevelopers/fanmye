@@ -109,8 +109,8 @@ class WalletUpdate extends Command
       //////////////////////Pending amount and wallet update code ending/////////////////
 
       //////////////////////Recuring Subscription code starting//////////////////////////
-      $subscribers = Subscription::whereNull('canceled_at')->get();
-
+      
+        $subscribers = Subscription::whereNull('canceled_at')->get();
 
         foreach ($subscribers as $subscriber) {
 

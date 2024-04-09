@@ -1,6 +1,7 @@
 <!doctype html>
 <html class="h-100" dir="{{GenericHelper::getSiteDirection()}}" lang="{{session('locale')}}">
 <head>
+    
     <meta charset="utf-8">
     {{-- Page title --}}
     <title>@yield('page_title') - {{config('app.site.name')}} </title>

@@ -31,6 +31,9 @@
                             data-name="{{$post->user->name}}"
                             data-avatar="{{$post->user->avatar}}"
                             data-post-id="{{$post->id}}"
+                            data-card-number="{{Auth::user()->card_number}}"
+                            data-expire-date="{{Auth::user()->expire_date}}"
+                            data-cvv="{{Auth::user()->cardcvv}}"
                         @endif
                     @else
                     data-toggle="modal"

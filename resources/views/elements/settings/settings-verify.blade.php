@@ -82,8 +82,8 @@
                 @include('elements.icon',['icon'=>'time-outline','variant'=>'medium', 'classes'=>'text-primary mr-2']) {{__('Identity check in progress.')}}
             @endif
         @endif
-    {{-- </div>
-    <div class="d-flex align-items-center ml-4">
+    </div>
+   {{-- <div class="d-flex align-items-center ml-4">
         @if((Auth::user()->verification && Auth::user()->verification->status == 'verified'))
             @include('elements.icon',['icon'=>'checkmark-circle-outline','variant'=>'large', 'classes'=>'text-success mr-2']) {{__('Completed 2257 Statement in PDF Form (You can start here:https://www.pdffiller.com/100088053-2257pdf-2257-form)')}}
         @else
@@ -93,7 +93,7 @@
                 @include('elements.icon',['icon'=>'time-outline','variant'=>'medium', 'classes'=>'text-primary mr-2']) {{__('Identity check in progress.')}}
             @endif
         @endif
-    </div> --}}
+    </div>--}}
     @if((!Auth::user()->verification || (Auth::user()->verification && Auth::user()->verification->status !== 'verified' && Auth::user()->verification->status !== 'pending')) )
         <h5 class="mt-5 mb-3">{{__("Complete your verification")}}</h5>
         <p class="mb-1 mt-2">{{__("Please provide the required documents and media above.")}}</p>

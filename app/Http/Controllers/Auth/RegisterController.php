@@ -91,7 +91,6 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-
         return AuthServiceProvider::createUser($data);
     }
 
@@ -109,6 +108,7 @@ class RegisterController extends Controller
         if ($visitor) {
             $lastUpdated = Carbon::parse($visitor->updated_at);
             $currentTime = Carbon::now();
+            $differenceInMinutes = $lastUpdated->diffInMinutes($currentTime);
 
                 if ($lastUpdated->diffInHours($currentTime) <= 24) {
                     Link::where('id', $visitor->link_id)->increment('sign_up');

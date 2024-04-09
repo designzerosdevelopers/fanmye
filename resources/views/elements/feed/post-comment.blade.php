@@ -1,5 +1,5 @@
 <div class="post-comment d-flex flex-row mb-3" data-commentID="{{$comment->id}}">
-    <div class="" >
+    <div class="">
         <img class="rounded-circle" src="{{$comment->author->avatar}}">
     </div>
     <div class="pl-3 w-100">

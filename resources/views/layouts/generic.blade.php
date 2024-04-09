@@ -14,6 +14,5 @@
 @include('template.footer')
 @include('template.jsVars')
 @include('template.jsAssets')
-
 </body>
 </html>

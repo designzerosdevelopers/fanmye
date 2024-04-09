@@ -364,10 +364,12 @@ var checkout = {
             type: 'POST',
             data: $('#pp-buyItem').serialize(),
             url: app.baseUrl + '/payment/initiate/paywithwallet',
-            success: function () {
-                callback();
+            success: function (response) {
+                console.log(response);
+                 callback();
             },
             error: function (result) {
+
                 $('.checkout-continue-btn .spinner-border').addClass('d-none');
                 if(result.status === 500){
                     launchToast('danger',trans('Error'),result.responseJSON.message);

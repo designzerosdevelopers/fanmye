@@ -175,7 +175,6 @@ class AttachmentServiceProvider extends ServiceProvider
     {
 
         $storage = Storage::disk(config('filesystems.defaultFilesystemDriver'));
-
         do {
             $fileId = Uuid::uuid4()->getHex();
         } while (Attachment::query()->where('id', $fileId)->first() != null);

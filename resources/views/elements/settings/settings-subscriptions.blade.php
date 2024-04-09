@@ -28,7 +28,7 @@
                 <div class="col-4 col-md-2 text-truncate">{{__('Status')}}</div>
                 <div class="col-2 text-truncate d-none d-md-block">{{__('Paid with')}}</div>
                 <div class="col-4 col-md-2 text-truncate">{{__('Renews')}}</div>
-                <div class="col-2 text-truncate d-none d-md-block">{{__('Expires at')}}</div>
+                <div class="col-2 text-truncate d-none d-md-block">{{__('Expires on')}}</div>
                 <div class="col-1 text-truncate"></div>
             </div>
             @foreach($subscriptions as $subscription)

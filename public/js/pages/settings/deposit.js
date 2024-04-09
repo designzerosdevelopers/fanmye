@@ -12,18 +12,19 @@ $(function () {
         }
     });
 
-    $('#card-number').on('input', function () {
-        var cardNumber = $(this).val();
-
-        // Remove non-numeric characters
-        cardNumber = cardNumber.replace(/\D/g, '');
-
+    $('#card-number').on('input paste', function (event) {
+        var cardNumber = event.type === 'input' ? $(this).val() : event.originalEvent.clipboardData.getData('text');
+    
+        // Remove non-numeric characters and spaces
+        cardNumber = cardNumber.replace(/\D/g, '').replace(/\s/g, '');
+    
         // Ensure a maximum of 16 digits (adjust based on your specific needs)
         cardNumber = cardNumber.substring(0, 16);
-
+    
         // Update the input value
         $(this).val(cardNumber);
     });
+    
 
 
     $('#expiration-date').on('input', function () {
@@ -154,7 +155,7 @@ var DepositSettings = {
         if (val) {
             switch (val) {
                 case 'payment-credit-card':
-                    DepositSettings.provider = 'creditcard';
+                    DepositSettings.provider = 'Credit Card';
                     break;
                 case 'payment-stripe':
                     DepositSettings.provider = 'stripe';
@@ -336,16 +337,6 @@ var DepositSettings = {
               $('.spinner-border').addClass('d-none');
                 if(response.payresponse == 'SUCCESS' || response.payresponse=='Approved') {     
                     $('#deposit-amount').val('');
-                    $('#card-number').val('');
-                    $('#expiration-date').val('');
-                    $('#cvv').val('');
-                    $('#first-name').val('');
-                    $('#last-name').val('');
-                    $('#country').val('');
-                    $('#address').val('');
-                    $('#city').val('');
-                    $('#state').val('');
-                    $('#zip-code').val('');
        
                     $('.alert').removeClass('d-hide alert-danger').addClass('alert-success').html('Deposited successfully').fadeIn();
                 }else{

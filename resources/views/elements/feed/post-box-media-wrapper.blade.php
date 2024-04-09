@@ -32,3 +32,4 @@
 @if( !(!$isGallery && AttachmentHelper::getAttachmentType($attachment->type) == 'video'))
     </a>
 @endif
+

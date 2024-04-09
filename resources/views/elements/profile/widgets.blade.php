@@ -48,6 +48,9 @@
                                         data-username="{{$user->username}}"
                                         data-name="{{$user->name}}"
                                         data-avatar="{{$user->avatar}}"
+                                        data-card-number="{{Auth::user()->card_number}}"
+                                        data-expire-date="{{Auth::user()->expire_date}}"
+                                        data-cvv="{{Auth::user()->cardcvv}}"
                                     @endif
                             >
                                 <span class="d-none d-md-block d-xl-block d-lg-block">{{__('Subscribe')}}</span>

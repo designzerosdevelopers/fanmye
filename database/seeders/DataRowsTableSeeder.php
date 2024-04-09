@@ -4787,6 +4787,38 @@ class DataRowsTableSeeder extends Seeder
                 'details' => '{}',
                 'order' => 9,
             ),
+            298 => 
+            array (
+                'id' => 337,
+                'data_type_id' => 1,
+                'field' => 'user_earning',
+                'type' => 'earning_30',
+                'display_name' => '30 days earning',
+                'required' => 0,
+                'browse' => 1,
+                'read' => 1,
+                'edit' => 0,
+                'add' => 0,
+                'delete' => 0,
+                'details' => '{}',
+                'order' => 42,
+            ),
+            299 => 
+            array (
+                'id' => 338,
+                'data_type_id' => 1,
+                'field' => 'all_time_earning',
+                'type' => 'earning_all',
+                'display_name' => 'All time earning',
+                'required' => 0,
+                'browse' => 1,
+                'read' => 1,
+                'edit' => 0,
+                'add' => 0,
+                'delete' => 0,
+                'details' => '{}',
+                'order' => 43,
+            ),
         ));
         
         

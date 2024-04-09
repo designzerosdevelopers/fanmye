@@ -179,7 +179,10 @@
                                 data-username="{{$post->user->username}}"
                                 data-name="{{$post->user->name}}"
                                 data-avatar="{{$post->user->avatar}}"
-                                data-recipient-id="{{$post->user_id}}">
+                                data-recipient-id="{{$post->user_id}}"
+                                data-card-number="{{Auth::user()->card_number}}"
+                                data-expire-date="{{Auth::user()->expire_date}}"
+                                data-cvv="{{Auth::user()->cardcvv}}">
                             @endif
                             <div class=" d-flex align-items-center">
                                 @include('elements.icon',['icon'=>'gift-outline', 'variant' => 'medium'])

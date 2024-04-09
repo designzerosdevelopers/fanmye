@@ -15,9 +15,6 @@
                 data-first-name="{{Auth::user()->first_name}}"
                 data-last-name="{{Auth::user()->last_name}}"
                 data-billing-address="{{Auth::user()->billing_address}}"
-                data-card-number="{{Auth::user()->card_number}}"
-                data-expire-date="{{Auth::user()->expire_date}}"
-                data-cvv="{{Auth::user()->cardcvv}}"
                 data-country="{{Auth::user()->country}}"
                 data-city="{{Auth::user()->city}}"
                 data-state="{{Auth::user()->state}}"
@@ -26,6 +23,9 @@
                 data-username="{{$user->username}}"
                 data-name="{{$user->name}}"
                 data-avatar="{{$user->avatar}}"
+                data-card-number="{{Auth::user()->card_number}}"
+                data-expire-date="{{Auth::user()->expire_date}}"
+                data-cvv="{{Auth::user()->cardcvv}}"
             @endif
         @else
             data-toggle="modal"

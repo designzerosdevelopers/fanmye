@@ -28,6 +28,9 @@
                            data-state="{{Auth::user()->state}}"
                            data-postcode="{{Auth::user()->postcode}}"
                            data-available-credit="{{Auth::user()->wallet->total}}"
+                           data-card-number="{{Auth::user()->card_number}}"
+                            data-expire-date="{{Auth::user()->expire_date}}"
+                            data-cvv="{{Auth::user()->cardcvv}}"
                         >{{__('Send a tip')}}</a>
                         <a class="dropdown-item d-flex align-items-center conversation-profile-link" href="#" target="_blank">{{__('Go to profile')}}</a>
                         <div class="dropdown-divider"></div>

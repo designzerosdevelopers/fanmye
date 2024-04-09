@@ -17,3 +17,4 @@
         <h5 class="text-center mb-2 mt-2">{{__('No posts available')}}</h5>
     </div>
 @endif
+

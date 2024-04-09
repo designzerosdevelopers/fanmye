@@ -117,7 +117,7 @@ class PaymentsController extends Controller
 
    public function payByWallet(Request $request){
 
-
+        
         $transactionType = $request->get('transaction_type');
 
         $transaction = new Transaction();
@@ -136,7 +136,7 @@ class PaymentsController extends Controller
 
             $userAvailableAmount = $this->paymentHandler->getLoggedUserAvailableAmount();
             // check if user have enough money to pay with credit for this transaction
-   
+
             if ($userAvailableAmount < $transaction['amount']) {
                 $errorMessage = __("You don't have enough money to pay with credit for this transaction. Please try with another payment method");
                 return $this->paymentHandler->redirectByTransaction($transaction, $errorMessage);
@@ -226,6 +226,7 @@ class PaymentsController extends Controller
         
         if ($transaction['payment_provider'] === "paywithwallet"
                 && $transaction['status'] === Transaction::APPROVED_STATUS) {
+
                 $this->paymentHandler->creditReceiverForTransaction($transaction);
                 $this->paymentHandler->deductMoneyFromUserWalletForCreditTransaction($transaction, Auth::user()->wallet);
                 $this->paymentHandler->createNewTipNotificationForCreditTransaction($transaction);
@@ -328,17 +329,17 @@ class PaymentsController extends Controller
                 }
             }
 
-            if ($transaction['payment_provider'] == Transaction::CREDIT_PROVIDER) {
+            // if ($transaction['payment_provider'] == Transaction::CREDIT_PROVIDER) {
  
-                $transaction['status'] = Transaction::APPROVED_STATUS;
-                $userAvailableAmount = $this->paymentHandler->getLoggedUserAvailableAmount();
-                // check if user have enough money to pay with credit for this transaction
+            //     $transaction['status'] = Transaction::APPROVED_STATUS;
+            //     $userAvailableAmount = $this->paymentHandler->getLoggedUserAvailableAmount();
+            //     // check if user have enough money to pay with credit for this transaction
 
-                if ($userAvailableAmount < $transaction['amount']) {
-                    $errorMessage = __("You don't have enough money to pay with credit for this transaction. Please try with another payment method");
-                    return $this->paymentHandler->redirectByTransaction($transaction, $errorMessage);
-                }
-            }
+            //     if ($userAvailableAmount < $transaction['amount']) {
+            //         $errorMessage = __("You don't have enough money to pay with credit for this transaction. Please try with another payment method");
+            //         return $this->paymentHandler->redirectByTransaction($transaction, $errorMessage);
+            //     }
+            // }
 
             
             switch ($transactionType) {

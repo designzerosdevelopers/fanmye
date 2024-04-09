@@ -220,10 +220,10 @@
 
     <div class="my-5 py-5 home-bg-section">
         <div class="container">
-            {{-- <div class="text-center mb-4">
+           {{-- <div class="text-center mb-4">
                 <h2 class="font-weight-bold">{{__("Featured creators")}}</h2>
                 <p>{{__("Here's list of currated content creators to start exploring now!")}}</p>
-            </div> --}}
+            </div>--}}
 
             <div class="creators-wrapper">
                 <div class="row px-3">

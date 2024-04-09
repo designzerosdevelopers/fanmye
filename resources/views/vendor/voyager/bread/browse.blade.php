@@ -123,6 +123,10 @@
                                                     @include($row->details->view, ['row' => $row, 'dataType' => $dataType, 'dataTypeContent' => $dataTypeContent, 'content' => $data->{$row->field}, 'action' => 'browse', 'view' => 'browse', 'options' => $row->details])
                                                 @elseif($row->type == 'image')
                                                     <img src="@if( !filter_var($data->{$row->field}, FILTER_VALIDATE_URL)){{ $dataType->slug == 'users' ? getUserAvatarAttribute( $data->{$row->field} ) : Voyager::image( $data->{$row->field} ) }}@else{{ $data->{$row->field} }}@endif" class="w-100p">
+                                                @elseif($row->type == 'earning_30')
+                                                        {{ App\Model\Transaction::where('recipient_user_id', $data->id)->whereBetween('created_at', [Carbon\Carbon::now()->subDays(30)->startOfDay(), Carbon\Carbon::now()->endOfDay()])->sum('amount') }}
+                                                @elseif($row->type == 'earning_all')
+                                                        {{ App\Model\Transaction::where('recipient_user_id', $data->id)->sum('amount') }}
                                                 @elseif($row->type == 'relationship')
                                                     @include('voyager::formfields.relationship', ['view' => 'browse','options' => $row->details])
                                                 @elseif($row->type == 'select_multiple')

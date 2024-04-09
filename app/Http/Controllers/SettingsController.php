@@ -55,15 +55,14 @@ class SettingsController extends Controller
         'privacy' => ['heading' => 'Your privacy and safety matters', 'icon' => 'shield'],
         'verify' => ['heading' => 'Get verified and start earning now!', 'icon' => 'checkmark'],
         'Tracking Links' => ['heading' => 'Generate Tracking Links to Monetize Performance', 'icon' => 'layers'],
-        'statistics' => ['heading' => 'View statistics of your earning', 'icon' => 'wallet'],
+        'statistics' => ['heading' => 'View Statistics of your Earnings', 'icon' => 'wallet'],
     ];
 
     public function __construct()
     {
-        if(getSetting('site.hide_identity_checks')){
+        if (getSetting('site.hide_identity_checks')) {
             unset($this->availableSettings['verify']);
         }
-
     }
 
     /**
@@ -75,7 +74,7 @@ class SettingsController extends Controller
     public function checkIfValidRoute($route)
     {
         if ($route) {
-            if (! isset($this->availableSettings[$route])) {
+            if (!isset($this->availableSettings[$route])) {
                 abort(404);
             }
         }
@@ -91,11 +90,11 @@ class SettingsController extends Controller
      */
     public function index(Request $request)
     {
-        
+
         $this->checkReferralAccess();
 
         $this->checkIfValidRoute($request->route('type'));
-        
+
         $user = Auth::user();
         $userID = $user->id;
         $data = [];
@@ -117,15 +116,14 @@ class SettingsController extends Controller
 
                 // Default tab - active subs
                 $activeSubsTab = 'subscriptions';
-                if($request->get('active')){
+                if ($request->get('active')) {
                     $activeSubsTab = $request->get('active');
                 }
 
                 // Get either active (own) subs or subs paid for
-                if($activeSubsTab == 'subscriptions'){
+                if ($activeSubsTab == 'subscriptions') {
                     $subscriptions = Subscription::with(['creator'])->where('sender_user_id', $userID)->orderBy('id', 'desc')->paginate(6);
-                }
-                else{
+                } else {
                     $subscriptions = Subscription::with(['creator'])->where('recipient_user_id', $userID)->orderBy('id', 'desc')->paginate(6);
                 }
                 $subscribersCount = Subscription::with(['creator'])->where('recipient_user_id', $userID)->orderBy('id', 'desc')->count();
@@ -140,25 +138,25 @@ class SettingsController extends Controller
                 $data['subscribers'] = $subscribers;
                 break;
             case 'privacy':
-                $devices = UserDevice::where('user_id', $userID)->orderBy('created_at','DESC')->get()->map(function ($item){
+                $devices = UserDevice::where('user_id', $userID)->orderBy('created_at', 'DESC')->get()->map(function ($item) {
                     $agent = new Agent();
                     $agent->setUserAgent($item->agent);
                     $deviceType = 'Desktop';
-                    if($agent->isPhone()){
+                    if ($agent->isPhone()) {
                         $deviceType = 'Mobile';
                     }
-                    if($agent->isTablet()){
+                    if ($agent->isTablet()) {
                         $deviceType = 'Tablet';
                     }
-                    $item->setAttribute('device_type',$deviceType);
-                    $item->setAttribute('browser',$agent->browser());
-                    $item->setAttribute('device',$agent->device());
-                    $item->setAttribute('platform',$agent->platform());
+                    $item->setAttribute('device_type', $deviceType);
+                    $item->setAttribute('browser', $agent->browser());
+                    $item->setAttribute('device', $agent->device());
+                    $item->setAttribute('platform', $agent->platform());
                     return $item;
                 });
                 $data['devices'] = $devices;
-                $data['verifiedDevicesCount'] = UserDevice::where('user_id', $userID)->where('verified_at','<>',NULL)->count();
-                $data['unverifiedDevicesCount'] = UserDevice::where('user_id', $userID)->where('verified_at',NULL)->count();
+                $data['verifiedDevicesCount'] = UserDevice::where('user_id', $userID)->where('verified_at', '<>', NULL)->count();
+                $data['unverifiedDevicesCount'] = UserDevice::where('user_id', $userID)->where('verified_at', NULL)->count();
                 $data['countries'] = Country::all();
                 JavaScript::put([
                     'userGeoBlocking' => [
@@ -183,71 +181,25 @@ class SettingsController extends Controller
                 $data['minBirthDate'] = Carbon::now()->subYear(18)->format('Y-m-d');
                 break;
             case 'referrals':
-                if(getSetting('referrals.enabled')) {
+                if (getSetting('referrals.enabled')) {
                     $data['referrals'] = ReferralCodeUsage::with(['usedBy'])->where('referral_code', $user->referral_code)->orderBy('id', 'desc')->paginate(6);
                 }
                 break;
             case 'Tracking Links':
 
-                    $data['generatelinks'] = Link::where('user_id', auth()->id())->orderBy('id', 'desc')->paginate(6);
+                $data['generatelinks'] = Link::where('user_id', auth()->id())->orderBy('id', 'desc')->paginate(6);
 
                 break;
-                case 'statistics':
-                    
-                    $startDate = $request->start;
-                    $endDate = $request->end;
-                
-                    $query = Transaction::where('recipient_user_id', auth()->id());
+            case 'statistics':
 
-                    $querySubscribers = clone $query;
-                    $queryPostUnlock = clone $query;
-                    $queryMessageUnlock = clone $query;
-                    $queryTip = clone $query;
 
-                    if ($startDate && $endDate) {
-                        $queryMessageUnlock->whereBetween('created_at', [$startDate, $endDate]);
-                        $querySubscribers->whereBetween('created_at', [$startDate, $endDate]);
-                        $queryPostUnlock->whereBetween('created_at', [$startDate, $endDate]);
-                        $queryTip->whereBetween('created_at', [$startDate, $endDate]);
-                    }
-                    $message_unlock = $queryMessageUnlock->where('type', 'like', '%message-unlock%')->pluck('amount')->sum();
-                    $subscribers = $querySubscribers->where('type', 'like', '%subscription%')->pluck('amount')->sum();
-                    $post_unlock = $queryPostUnlock->where('type', 'like', '%post-unlock%')->pluck('amount')->sum();
-                    $tip = $queryTip->where('type', 'like', '%tip%')->pluck('amount')->sum();
-
-                    $message_unlock_count = $queryMessageUnlock->where('type', 'like', '%message-unlock%')->count();
-                    $subscribers_count = $querySubscribers->where('type', 'like', '%subscription%')->count();
-                    $post_unlock_count = $queryPostUnlock->where('type', 'like', '%post-unlock%')->count();
-                    $tip_count = $queryTip->where('type', 'like', '%tip%')->count();
-                    
-                    $message_unlock = $message_unlock ?? 0;
-                    $subscribers = $subscribers ?? 0;
-                    $post_unlock = $post_unlock ?? 0;
-                    $tip = $tip ?? 0;
-                
-                    $grand_total = $message_unlock + $subscribers + $post_unlock + $tip;
-
-                    $data['statistics'] = [
-                        'message_unlock' => $message_unlock,
-                        'subscribers' => $subscribers,
-                        'post_unlock' => $post_unlock,
-                        'tip' => $tip,
-                        'message_unlock_count' => $message_unlock_count,
-                        'subscribers_count' => $subscribers_count,
-                        'post_unlock_count' => $post_unlock_count,
-                        'tip_count' => $tip_count,
-                        'grand_total' => $grand_total
-                    ];
-
-                
-                    break;
-                
+                break;
         }
 
         return $this->renderSettingView($request->route('type'), $data);
     }
 
-    
+
     public function renderSettingView($route, $data = [])
     {
         $currentTab = $route ? $route : 'statistics';
@@ -255,9 +207,9 @@ class SettingsController extends Controller
         Javascript::put(
             [
                 'mediaSettings' => [
-                    'allowed_file_extensions' => '.'.str_replace(',', ',.', AttachmentServiceProvider::filterExtensions('manualPayments')),
+                    'allowed_file_extensions' => '.' . str_replace(',', ',.', AttachmentServiceProvider::filterExtensions('manualPayments')),
                     'max_file_upload_size' => (int) getSetting('media.max_file_upload_size'),
-                    'manual_payments_file_extensions' => '.'.str_replace(',', ',.', AttachmentServiceProvider::filterExtensions('manualPayments')),
+                    'manual_payments_file_extensions' => '.' . str_replace(',', ',.', AttachmentServiceProvider::filterExtensions('manualPayments')),
                     'manual_payments_excel_icon' => asset('/img/excel-preview.svg'),
                     'manual_payments_pdf_icon' => asset('/img/pdf-preview.svg'),
                 ],
@@ -284,7 +236,7 @@ class SettingsController extends Controller
     public function saveProfile(UpdateUserProfileSettingsRequest $request)
     {
         $validator = $this->validateUsername($request->get('username'));
-        if($validator->fails()){
+        if ($validator->fails()) {
             return back()->withErrors($validator);
         }
         $user = Auth::user();
@@ -302,13 +254,13 @@ class SettingsController extends Controller
         return back()->with('success', __('Settings saved.'));
     }
 
-    private function validateUsername($username){
+    private function validateUsername($username)
+    {
         $routes = [];
 
         // You need to iterate over the RouteCollection you receive here
         // to be able to get the paths and add them to the routes list
-        foreach (Route::getRoutes() as $route)
-        {
+        foreach (Route::getRoutes() as $route) {
             $routes[] = $route->uri;
         }
 
@@ -356,8 +308,8 @@ class SettingsController extends Controller
 
         $rules = UpdateUserRatesSettingsRequest::getRules();
         $trimmedRules = [];
-        foreach($rules as $key => $rule){
-            if(($request->get($key) != null) || $key == 'profile_access_price'){
+        foreach ($rules as $key => $rule) {
+            if (($request->get($key) != null) || $key == 'profile_access_price') {
                 $trimmedRules[$key] = $rule;
             }
         }
@@ -388,17 +340,17 @@ class SettingsController extends Controller
         $user = Auth::user();
         $key = $request->get('key');
         $value = filter_var($request->get('value'), FILTER_VALIDATE_BOOLEAN);
-        if (! in_array($key, ['public_profile', 'paid-profile','enable_2fa', 'enable_geoblocking', 'open_profile'])) {
+        if (!in_array($key, ['public_profile', 'paid-profile', 'enable_2fa', 'enable_geoblocking', 'open_profile'])) {
             return response()->json(['success' => false, 'message' => __('Settings not saved')]);
         }
-        if($key === 'paid-profile'){
+        if ($key === 'paid-profile') {
             $key = 'paid_profile';
         }
 
-        if($key == 'enable_2fa'){
-            if($value){
+        if ($key == 'enable_2fa') {
+            if ($value) {
                 $userDevices = UserDevice::where('user_id', $user->id)->get();
-                if(count($userDevices) == 0){
+                if (count($userDevices) == 0) {
                     AuthServiceProvider::addNewUserDevice($user->id, true);
                 }
             }
@@ -419,7 +371,7 @@ class SettingsController extends Controller
      */
     public function saveAccount(UpdateUserSettingsRequest $request)
     {
-        Auth::user()->update(['password'=>Hash::make($request->input('confirm_password'))]);
+        Auth::user()->update(['password' => Hash::make($request->input('confirm_password'))]);
 
         return back()->with('success', __('Settings saved.'));
     }
@@ -493,21 +445,21 @@ class SettingsController extends Controller
         $type = $request->route('uploadType');
 
         try {
-            $directory = 'users/'.$type;
+            $directory = 'users/' . $type;
             $s3 = Storage::disk(config('filesystems.defaultFilesystemDriver'));
             $fileId = Uuid::uuid4()->getHex();
-            $filePath = $directory.'/'.$fileId.'.'.$file->guessClientExtension();
+            $filePath = $directory . '/' . $fileId . '.' . $file->guessClientExtension();
 
             $img = Image::make($file);
             if ($type == 'cover') {
                 $coverWidth = 599;
                 $coverHeight = 180;
-                if(getSetting('media.users_covers_size')){
-                    $coverSizes = explode('x',getSetting('media.users_covers_size'));
-                    if(isset($coverSizes[0])){
+                if (getSetting('media.users_covers_size')) {
+                    $coverSizes = explode('x', getSetting('media.users_covers_size'));
+                    if (isset($coverSizes[0])) {
                         $coverWidth = (int)$coverSizes[0];
                     }
-                    if(isset($coverSizes[1])){
+                    if (isset($coverSizes[1])) {
                         $coverHeight = (int)$coverSizes[1];
                     }
                 }
@@ -516,12 +468,12 @@ class SettingsController extends Controller
             } else {
                 $avatarWidth = 96;
                 $avatarHeight = 96;
-                if(getSetting('media.users_avatars_size')){
-                    $sizes = explode('x',getSetting('media.users_avatars_size'));
-                    if(isset($sizes[0])){
+                if (getSetting('media.users_avatars_size')) {
+                    $sizes = explode('x', getSetting('media.users_avatars_size'));
+                    if (isset($sizes[0])) {
                         $avatarWidth = (int)$sizes[0];
                     }
-                    if(isset($sizes[1])){
+                    if (isset($sizes[1])) {
                         $avatarHeight = (int)$sizes[1];
                     }
                 }
@@ -535,11 +487,11 @@ class SettingsController extends Controller
             // Saving to disk
             $s3->put($filePath, $img, 'public');
         } catch (\Exception $exception) {
-            return response()->json(['success' => false, 'errors' => ['file'=>$exception->getMessage()]]);
+            return response()->json(['success' => false, 'errors' => ['file' => $exception->getMessage()]]);
         }
 
         $assetPath = GenericHelperServiceProvider::getStorageAvatarPath($filePath);
-        if($type == 'cover'){
+        if ($type == 'cover') {
             $assetPath = GenericHelperServiceProvider::getStorageCoverPath($filePath);
         }
         return response()->json(['success' => true, 'assetSrc' => $assetPath]);
@@ -560,7 +512,7 @@ class SettingsController extends Controller
         }
         Auth::user()->update($data);
 
-        return response()->json(['success' => true, 'message' => ucfirst($type).' '.__("removed successfully").'.', 'data' => [
+        return response()->json(['success' => true, 'message' => ucfirst($type) . ' ' . __("removed successfully") . '.', 'data' => [
             'avatar' => Auth::user()->avatar,
             'cover' => Auth::user()->cover,
         ]]);
@@ -575,7 +527,7 @@ class SettingsController extends Controller
     public function updateUserSettings(Request $request)
     {
         try {
-            if (! in_array($request->key, [
+            if (!in_array($request->key, [
                 'notification_email_new_post_created',
                 'notification_email_new_sub',
                 'notification_email_new_message',
@@ -590,10 +542,11 @@ class SettingsController extends Controller
                 return response()->json(['success' => false, 'message' => __('Invalid setting key')]);
             }
 
-            User::where('id', Auth::user()->id)->update(['settings'=> array_merge(
-                Auth::user()->settings->toArray(),
-                [$request->get('key') => $request->get('value')]
-            ),
+            User::where('id', Auth::user()->id)->update([
+                'settings' => array_merge(
+                    Auth::user()->settings->toArray(),
+                    [$request->get('key') => $request->get('value')]
+                ),
             ]);
 
             return response()->json(['success' => true, 'message' => __('Settings saved')]);
@@ -644,14 +597,14 @@ class SettingsController extends Controller
         try {
             $attachmentId = $request->get('assetSrc');
             $data = json_decode($request->session()->get('verifyAssets'));
-            $file = Attachment::where('user_id',Auth::user()->id)->where('id', $attachmentId)->first();
+            $file = Attachment::where('user_id', Auth::user()->id)->where('id', $attachmentId)->first();
             $newData = array_diff($data, [$attachmentId]);
             session(['verifyAssets' => json_encode($newData)]);
             $storage = Storage::disk(config('filesystems.defaultFilesystemDriver'));
             $storage->delete($file->filename);
             return response()->json(['success' => true]);
         } catch (\Exception $exception) {
-            return response()->json(['success' => false, 'errors' => ['file'=>$exception->getMessage()]]);
+            return response()->json(['success' => false, 'errors' => ['file' => $exception->getMessage()]]);
         }
     }
 
@@ -664,7 +617,7 @@ class SettingsController extends Controller
     public function saveVerifyRequest(Request $request)
     {
         if ($request->session()->get('verifyAssets')) {
-            if (! Auth::user()->verification) {
+            if (!Auth::user()->verification) {
                 UserVerify::create([
                     'user_id' => Auth::user()->id,
                     'files' => $request->session()->get('verifyAssets'),
@@ -704,7 +657,8 @@ class SettingsController extends Controller
         }
     }
 
-    public static function getCountries(){
+    public static function getCountries()
+    {
         try {
             $countries = Country::all();
             return response()->json(['success' => true, 'data' => $countries]);
@@ -713,141 +667,196 @@ class SettingsController extends Controller
         }
     }
 
-    protected function checkReferralAccess(){
-        if(!getSetting('referrals.enabled')){
+    protected function checkReferralAccess()
+    {
+        if (!getSetting('referrals.enabled')) {
             unset($this->availableSettings['referrals']);
         }
-        if(getSetting('referrals.disable_for_non_verified')){
+        if (getSetting('referrals.disable_for_non_verified')) {
             $user = Auth::user();
-            if(!($user->email_verified_at && $user->birthdate && ($user->verification && $user->verification->status == 'verified') )){
+            if (!($user->email_verified_at && $user->birthdate && ($user->verification && $user->verification->status == 'verified'))) {
                 unset($this->availableSettings['referrals']);
             }
         }
     }
 
-    public function editshorten($id){
+    public function editshorten($id)
+    {
 
         $link['linkdata'] = Link::findOrFail($id);
         return $this->renderSettingView('generatelink', $link);
     }
 
-    public function updateshorten(Request $request, $id){
-        
-      $link =  Link::where('id', $id)->firstOrfail();
+    public function updateshorten(Request $request, $id)
+    {
 
-      $link->update([
-        'title' => $request->title,
-        'original_url' =>$request->original_url,
-      ]);
-      return redirect('my/settings/generatelink');
+        $link =  Link::where('id', $id)->firstOrfail();
+
+        $link->update([
+            'title' => $request->title,
+            'original_url' => $request->original_url,
+        ]);
+        return redirect('my/settings/generatelink');
     }
 
-    public function deleteshorten($id){
+    public function deleteshorten($id)
+    {
         $link =  Link::where('id', $id)->firstOrfail();
         $link->delete();
-   return redirect()->back();
-       }
-
-       public function shorteninfo(Request $request, $url){
-        
-        $fullUrl = url("/hitshorten/{$url}");
-        $link = Link::where('shorten_url', $fullUrl)->firstOrFail();
-       
-        return view('elements.settings.linktrack', ['link'=>$link]);
+        return redirect()->back();
     }
 
-    public function hitshorten(Request $request, $url){
+    public function shorteninfo(Request $request, $url)
+    {
 
         $fullUrl = url("/hitshorten/{$url}");
-    
+        $link = Link::where('shorten_url', $fullUrl)->firstOrFail();
+
+        return view('elements.settings.linktrack', ['link' => $link]);
+    }
+
+    public function hitshorten(Request $request, $url)
+    {
+
+        $fullUrl = url("/hitshorten/{$url}");
+
         $link = Link::where('shorten_url', $fullUrl)->firstOrFail();
         $response = redirect($link->original_url);
-    
+
         $visitor = Visitor::where('ip_address', $request->ip())->first();
-    
+
         if ($visitor) {
-                $lastUpdated = Carbon::parse($visitor->updated_at);
-                $currentTime = Carbon::now();
-                $differenceInMinutes = $lastUpdated->diffInMinutes($currentTime);
-                if ($differenceInMinutes > -1) {
-                    $link->increment('visitor');
-                }
-                $visitor->update(['updated_at' => now()]);
-    
-            } else {
-                Visitor::create([
-                    'link_id' => $link->id,
-                    'ip_address' => $request->ip(),
-                ]);
+            $lastUpdated = Carbon::parse($visitor->updated_at);
+            $currentTime = Carbon::now();
+            $differenceInMinutes = $lastUpdated->diffInMinutes($currentTime);
+            if ($differenceInMinutes > -1) {
+                $link->increment('visitor');
+            }
+            $visitor->update(['updated_at' => now()]);
+        } else {
+            Visitor::create([
+                'link_id' => $link->id,
+                'ip_address' => $request->ip(),
+            ]);
         }
-    
+
         return $response;
-    
-    
+    }
+
+    public function linkshorten(Request $request)
+    {
+
+
+        $randomString = Str::random(20);
+        $url = url("/hitshorten/{$randomString}");
+
+        Link::create([
+            'user_id' => auth()->user()->id,
+            'title' => $request->title,
+            'original_url' => $request->original_url,
+            'shorten_url' => $url,
+        ]);
+
+
+        return redirect()->back();
+    }
+
+    public function statisticsperiod(Request $request)
+    {
+        $startDate = date('Y-m-d', strtotime($request->startDate));
+        $endDate = date('Y-m-d', strtotime($request->endDate));
+
+
+        $query = Transaction::where('recipient_user_id', auth()->id())
+            ->selectRaw('DATE(created_at) as date, type, SUM(amount) as total_amount, COUNT(*) as transaction_count')
+            ->groupBy('date', 'type');
+
+            if ($startDate && $endDate) {
+                // Adjust the start date to include the full day
+                $startDateTime = date('Y-m-d 00:00:00', strtotime($startDate));
+                
+                // Adjust the end date to include the full day
+                $endDateTime = date('Y-m-d 23:59:59', strtotime($endDate));
+            
+                $query->whereBetween('created_at', [$startDateTime, $endDateTime]);
+            }
+            
+
+        $transactions = $query->get();
+
+        $statistics = [];
+
+        foreach ($transactions as $transaction) {
+            $date = $transaction->date;
+            $type = $transaction->type;
+            $totalAmount = $transaction->total_amount;
+            $transactionCount = $transaction->transaction_count;
+            $type = str_contains($transaction->type, 'subscription') ? 'subscription' : $type;
+            // Check if the date key exists, if not, initialize it as an empty array
+            if (!isset($statistics[$date])) {
+                $statistics[$date] = [];
+            }
+
+            // Initialize all possible types with their respective total amounts and transaction counts as zero
+            $possibleTypes = ['messages', 'subscription', 'post-unlock', 'tip'];
+            foreach ($possibleTypes as $possibleType) {
+                if (!isset($statistics[$date][$possibleType])) {
+                    $statistics[$date][$possibleType] = [
+                        'total_amount' => 0,
+                        'transaction_count' => 0
+                    ];
+                }
+            }
+
+            // Add the current transaction's amount and count to the existing values
+            $statistics[$date][$type]['total_amount'] += $totalAmount;
+            $statistics[$date][$type]['transaction_count'] += $transactionCount;
+        }
+        // Calculate ppv, messages, tips, and subs totals
+        $totalPPVAmount = 0;
+        $totalPPVSold = 0;
+        $totalMessagesAmount = 0;
+        $totalMessagesSold = 0;
+        $totalTipsAmount = 0;
+        $totalTipsSold = 0;
+        $totalSubsAmount = 0;
+        $totalSubsSold = 0;
+
+        foreach ($statistics as $date => $data) {
+            foreach ($data as $type => $values) {
+                switch ($type) {
+                    case 'post-unlock':
+                        $totalPPVAmount += $values['total_amount'];
+                        $totalPPVSold += $values['transaction_count'];
+                        break;
+                    case 'messages':
+                        $totalMessagesAmount += $values['total_amount'];
+                        $totalMessagesSold += $values['transaction_count'];
+                        break;
+                    case 'tip':
+                        $totalTipsAmount += $values['total_amount'];
+                        $totalTipsSold += $values['transaction_count'];
+                        break;
+                    case 'subscription':
+                        $totalSubsAmount += $values['total_amount'];
+                        $totalSubsSold += $values['transaction_count'];
+                        break;
+                }
+            }
         }
 
-        public function linkshorten(Request $request){
+        $grandTotalAmount = $totalPPVAmount + $totalMessagesAmount + $totalTipsAmount + $totalSubsAmount;
+
+        $responseData = [
+            'statistics' => $statistics,
+            'ppv' => ['amount' => $totalPPVAmount, 'sold' => $totalPPVSold],
+            'messages' => ['amount' => $totalMessagesAmount, 'sold' => $totalMessagesSold],
+            'tips' => ['amount' => $totalTipsAmount, 'sold' => $totalTipsSold],
+            'subs' => ['amount' => $totalSubsAmount, 'sold' => $totalSubsSold],
+            'grand_total_all' => $grandTotalAmount
+        ];
 
 
-            $randomString = Str::random(20); 
-            $url = url("/hitshorten/{$randomString}"); 
-
-            Link::create([
-              'user_id' => auth()->user()->id,
-              'title' => $request->title,
-              'original_url' => $request->original_url,
-              'shorten_url' => $url,
-          ]);
-          
-
-              return redirect()->back();
-
-  }
-
-  public function statisticsperiod(Request $request){
-
-
-                    $startDate = $request->start;
-                    $endDate = $request->end;
-                
-                    $query = Transaction::where('recipient_user_id', auth()->id());
-
-                    $querySubscribers = clone $query;
-                    $queryPostUnlock = clone $query;
-                    $queryMessageUnlock = clone $query;
-                    $queryTip = clone $query;
-
-                    if ($startDate && $endDate) {
-                        $queryMessageUnlock->whereBetween('created_at', [$startDate, $endDate]);
-                        $querySubscribers->whereBetween('created_at', [$startDate, $endDate]);
-                        $queryPostUnlock->whereBetween('created_at', [$startDate, $endDate]);
-                        $queryTip->whereBetween('created_at', [$startDate, $endDate]);
-                    }
-                    $Message_unlock = $queryMessageUnlock->where('type', 'like', '%message-unlock%')->pluck('amount')->sum();
-                    $subscribers = $querySubscribers->where('type', 'like', '%subscription%')->pluck('amount')->sum();
-                    $post_unlock = $queryPostUnlock->where('type', 'like', '%post-unlock%')->pluck('amount')->sum();
-                    $tip = $queryTip->where('type', 'like', '%tip%')->pluck('amount')->sum();
-                    
-                    $message_unlock = $Message_unlock ?? 0;
-                    $subscribers = $subscribers ?? 0;
-                    $post_unlock = $post_unlock ?? 0;
-                    $tip = $tip ?? 0;
-                
-                    $grand_total = $message_unlock + $subscribers + $post_unlock + $tip;
-
-                    $data['statistics'] = [
-                        'message_unlock' => $message_unlock,
-                        'subscribers' => $subscribers,
-                        'post_unlock' => $post_unlock,
-                        'tip' => $tip,
-                        'grand_total' => $grand_total
-                    ];
-    
-
-
-     return $this->renderSettingView($request->route('type'), $data);
-  }
-
-
+        return response()->json($responseData, 200);
+    }
 }
-

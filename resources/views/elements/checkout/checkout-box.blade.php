@@ -97,7 +97,7 @@
                                                                         <label for="expiredate">
                                                                             <span>{{__('Expire Date')}}</span>
                                                                         </label>
-                                                                        <input type="text" name="expiredate" id="expiredate" placeholder="{{__('Expire Date')}}" onchange="checkout.validateExpireDateField();"  required class="form-control uifield-expire_date">
+                                                                        <input type="text" name="expiredate" id="expiredate" placeholder="{{__('Expire Date')}}" onblur="checkout.validateExpireDateField();"  required class="form-control uifield-expire_date">
                                                                     </div>
                     
                                                                 </div>
@@ -106,7 +106,7 @@
                                                                         <label for="cvv">
                                                                             <span>{{__('CVV')}}</span>
                                                                         </label>
-                                                                        <input type="text" name="cvv" id="cvv" placeholder="{{__('CVV')}}" onchange="checkout.validateCvvField();" required class="form-control uifield-cardcvv">
+                                                                        <input type="text" name="cvv" id="cvv" placeholder="{{__('CVV')}}" onblur="checkout.validateCvvField();" required class="form-control uifield-cardcvv">
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -116,7 +116,7 @@
                                                                 <label for="firstName">
                                                                     <span>{{__('First name')}}</span>
                                                                 </label>
-                                                                <input type="text" name="firstName" placeholder="{{__('First name')}}" onchange="checkout.validateFirstNameField();" required class="form-control uifield-first_name">
+                                                                <input type="text" name="firstName" placeholder="{{__('First name')}}" onblur="checkout.validateFirstNameField();" required class="form-control uifield-first_name">
                                                             </div>
 
                                                         </div>

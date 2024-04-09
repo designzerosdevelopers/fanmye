@@ -58,6 +58,22 @@
 @stop
 
 @section('content')
+<style>
+    .video-wrapper.h-100.w-100.d-flex.justify-content-center.align-items-center {
+    height: auto !important;
+}
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    scroll-behavior: smooth;
+}
+.overflow-x-hidden-m {
+    overflow-x: visible !important;
+}
+    
+</style>
     <div class="row">
         <div class="min-vh-100 col-12 col-md-8 border-right pr-md-0">
 
@@ -380,3 +396,20 @@
     @include('elements.profile.qr-code-dialog')
 
 @stop
+// <script>
+//   document.addEventListener("DOMContentLoaded", function() {
+//         // Smooth scroll to an element
+//         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+//             anchor.addEventListener('click', function(e) {
+//                 e.preventDefault();
+//                 document.querySelector(this.getAttribute('href')).scrollIntoView({
+//                     behavior: 'smooth',
+//                     block: 'start', // Scroll to the top of the target element
+//                     inline: 'nearest' // Scroll to the nearest edge of the target element
+//                 });
+//             });
+//         });
+//     });
+
+// </script>
+

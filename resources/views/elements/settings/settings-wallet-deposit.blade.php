@@ -122,15 +122,15 @@
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label for="card-number">{{__('Card Number')}}</label>
-                <input type="text" class="form-control" id="card-number" value="{{Auth::user()->card_number}}" placeholder="{{__('Enter card number')}}" required>
+                <input type="text" class="form-control" id="card-number"  placeholder="{{__('Enter card number')}}" required>
             </div>
             <div class="form-group col-md-3">
                 <label for="expiration-date">{{__('Expire Date')}}</label>
-                <input type="text" class="form-control" id="expiration-date" value="{{Auth::user()->expire_date}}"  placeholder="{{__('MM/YY')}}" required>
+                <input type="text" class="form-control" id="expiration-date"   placeholder="{{__('MM/YY')}}" required>
             </div>
             <div class="form-group col-md-3">
                 <label for="cvv">{{__('CVV')}}</label>
-                <input type="text" class="form-control" value="{{Auth::user()->cardcvv}}" id="cvv" placeholder="{{__('CVV')}}" required>
+                <input type="text" class="form-control"  id="cvv" placeholder="{{__('CVV')}}" required>
             </div>
         </div>
     </div>
@@ -141,32 +141,32 @@
 <div class="form-row">
     <div class="form-group col-md-6">
         <label for="billing-firstname">{{__('First Name')}}</label>
-        <input type="text" class="form-control" id="first-name" value="{{Auth::user()->first_name}}" placeholder="{{__('First name')}}" required>
+        <input type="text" class="form-control" id="first-name"  placeholder="{{__('First name')}}" required>
     </div>
     <div class="form-group col-md-6">
         <label for="billing-lastname">{{__('Last Name')}}</label>
-        <input type="text" class="form-control" id="last-name" value="{{Auth::user()->last_name}}" placeholder="{{__('Last name')}}" required>
+        <input type="text" class="form-control" id="last-name"  placeholder="{{__('Last name')}}" required>
     </div>
 
     <div class="form-group col-md-12">
         <label for="country">{{__('Country')}}</label>
-        <input type="text" class="form-control" id="country" value="{{Auth::user()->country}}" placeholder="{{__('Enter country')}}" required>
+        <input type="text" class="form-control" id="country"  placeholder="{{__('Enter country')}}" required>
     </div>
     <div class="form-group col-md-12">
         <label for="address">{{__('Address')}}</label>
-        <input type="text" class="form-control" id="address" value="{{Auth::user()->billing_address}}" placeholder="{{__('Enter address')}}" required>
+        <input type="text" class="form-control" id="address"  placeholder="{{__('Enter address')}}" required>
     </div>
     <div class="form-group col-md-6">
         <label for="city">{{__('City')}}</label>
-        <input type="text" class="form-control" id="city" value="{{Auth::user()->city}}" placeholder="{{__('Enter city')}}" required>
+        <input type="text" class="form-control" id="city"  placeholder="{{__('Enter city')}}" required>
     </div>
     <div class="form-group col-md-6">
         <label for="state">{{__('State/Province')}}</label>
-        <input type="text" class="form-control" id="state" value="{{Auth::user()->state}}" placeholder="{{__('Enter state/province')}}" required>
+        <input type="text" class="form-control" id="state"  placeholder="{{__('Enter state/province')}}" required>
     </div>
     <div class="form-group col-md-6">
         <label for="zip-code">{{__('Zip Code')}}</label>
-        <input type="number" class="form-control" id="zip-code" value="{{Auth::user()->postcode}}" placeholder="{{__('Enter zip code')}}" required>
+        <input type="number" class="form-control" id="zip-code"  placeholder="{{__('Enter zip code')}}" required>
     </div>
     <button class="btn btn-primary btn-block rounded mr-0 mt-4 deposit-continue-btn" type="submit">{{__('Add funds')}}
         <div class="spinner-border spinner-border-sm ml-2 d-none" role="status">

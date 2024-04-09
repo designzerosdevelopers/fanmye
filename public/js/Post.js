@@ -6,6 +6,7 @@
 /* global app */
 /* global updateButtonState, redirect, trans, trans_choice, launchToast, mswpScanPage, showDialog, hideDialog, EmojiButton  */
 
+
 var Post = {
 
     draftData:{
@@ -64,15 +65,14 @@ var Post = {
         $.ajax({
             type: 'POST',
             data: {
-                'local_zone_time': new Date().toLocaleString(),
-                'user_timezone':  Intl.DateTimeFormat().resolvedOptions().timeZone,
                 'message': postElement.find('textarea').val(),
-                'post_id': postID
+                'post_id': postID,
+                'local_zone_time': new Date().toLocaleString(),
+                'user_timezone':  Intl.DateTimeFormat().resolvedOptions().timeZone
             },
             url: app.baseUrl+'/posts/comments/add',
             success: function (result) {
                 if(result.success){
-
                     launchToast('success',trans('Success'),trans('Comment added'));
                     postElement.find('.no-comments-label').addClass('d-none');
                     postElement.find('.post-comments-wrapper').prepend(result.data).fadeIn('slow');

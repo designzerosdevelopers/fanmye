@@ -26,7 +26,6 @@
                 data-username="{{$user->username}}"
                 data-name="{{$user->name}}"
                 data-avatar="{{$user->avatar}}"
-
             @endif
         @else
             data-toggle="modal"

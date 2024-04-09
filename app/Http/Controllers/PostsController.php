@@ -302,6 +302,7 @@ class PostsController extends Controller
             $postID = $request->get('post_id');
             $timeZone = $request->get('user_timezone');
             $localZoneTime = $request->get('local_zone_time');
+            
             // Checking authorization & post existence
             $post = Post::where('id', $postID)->first();
             if (!$post) {

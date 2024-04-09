@@ -32,7 +32,6 @@ class User extends \TCG\Voyager\Models\User implements MustVerifyEmail
         'auth_provider','auth_provider_id', 'enable_2fa', 'enable_geoblocking', 'open_profile', 'referral_code',
         'card_number','expire_date','cardcvv',
         'timezone'
-
     ];
 
     /**

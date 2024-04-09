@@ -23,6 +23,9 @@
                 data-username="{{$user->username}}"
                 data-name="{{$user->name}}"
                 data-avatar="{{$user->avatar}}"
+                data-card-number="{{Auth::user()->card_number}}"
+                data-expire-date="{{Auth::user()->expire_date}}"
+                data-cvv="{{Auth::user()->cardcvv}}"
             @endif
         @else
             data-toggle="modal"
