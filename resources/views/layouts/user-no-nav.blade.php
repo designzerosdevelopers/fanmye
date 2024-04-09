@@ -7,6 +7,7 @@
                 '/libs/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.css',
                 '/css/side-menu.css',
              ]])
+             
              <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
              <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
              <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
@@ -45,8 +46,8 @@
                '/libs/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.concat.min.js',
                '/js/SideMenu.js'
 ]])
-<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+
 </body>
 </html>

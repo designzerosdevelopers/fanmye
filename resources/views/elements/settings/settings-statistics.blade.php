@@ -8,7 +8,7 @@
             </div>
         </div>
 
-        <div class="card">
+        <div id="statistics" class="d-none" class="card">
             <div class="card-body">
                 <style>
                     @keyframes chartjs-render-animation {
@@ -78,7 +78,7 @@
                                 <i class="fas fa-calendar-alt"></i>
                             </span>
                             <span class="text-sm text-nowrap">
-                                <small class="d-none d-lg-inline"> From </small><a href="#" class="text-bold text-dark text-decoration-none" id="startDate" onclick="updateStartDate()">01-01-2020</a>
+                                <small class="d-none d-lg-inline"> From </small><a href="#" class="text-bold text-dark text-decoration-none" id="startDate" onclick="updateStartDate()">01-01-2024</a>
                                 <small> To </small><a href="#" class="text-bold text-dark text-decoration-none" id="endDate" onclick="updateEndDate()">31-12-2020</a>
                             </span>
                         </p>
@@ -219,6 +219,8 @@
                 var ctx = document.getElementById('canvas').getContext('2d');
                 window.myLine = new Chart(ctx, config);
             }
+            
+                $("#statistics").removeClass("d-none");
         }
 
         function ajaxRequest() {
